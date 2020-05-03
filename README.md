@@ -16,7 +16,7 @@ If you are using Python, we provid you with a `requirements.txt` file.
 
 You can choose 'pip' or 'conda' command to install dependencies in `requirements.txt`. We suggest you create a new virtual environment to try our code.
 
-#### Hardware resource:
+#### Hardware environment:
 In our experiments, we trained our model via 8 32G NVIDIA Tesla V100 GPUs and 64 Intel(R) Xeon(R) Gold 5218 CPU @ 2.30GHz. 
 
 ### 2. Code
