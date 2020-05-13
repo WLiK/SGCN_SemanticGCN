@@ -52,7 +52,7 @@ The dataset of Cora, Citeseer and Pubmed are given in /notebooks/data/. We show 
 
 ![avatar](/dataset_info.png)
 
-#### 4. Results
+### 4. Results
 
 Dataset | Model | ACC   
 -|-|-
