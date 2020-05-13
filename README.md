@@ -28,20 +28,21 @@ It is easily to train and eval the model as:
 
 1) Cora
 ````
-CUDA_VISIBLE_DEVICES=0 python SGCN.py --datname cora --nbsz 20 --alpha 10 --dropout 0.058 --lr 0.045 --ncaps 7 --nhidden 10 --nlayer 8 --reg 0.002 --routit 6
+CUDA_VISIBLE_DEVICES=0 python SGCN.py @parameter_cora
 ````
 
 2) Pubmed
 ````
-CUDA_VISIBLE_DEVICES=2 python SGCN.py --datname pubmed  --nbsz 20 --alpha 1.5 --dropout 0.27 --lr 0.02 --ncaps 7 --nhidden 24 --nlayer 8 --reg 0.022 --routit 6
+CUDA_VISIBLE_DEVICES=1 python SGCN.py @parameter_pubmed
 ````
 
 3) Citeseer
 
-The highest accuracy on Citeseer is given by SGCN-meta.py.
+    The highest accuracy on Citeseer is given by SGCN-meta.py.
 ````
-CUDA_VISIBLE_DEVICES=2 python SGCN-meta.py --datname citeseer --nbsz 20 --dropout 0.18 --lr 0.016 --ncaps 7 --nhidden 20 --nlayer 8 --reg 0.058 --routit 6
+CUDA_VISIBLE_DEVICES=2 python SGCN-meta.py @parameter_citeseer
 ````
+Note that `parameter*` is corresponding parameter file. And we list these results in `/notebook/result.ipynb`, we suggest you open it by jupyter notebook.
 
 #### 3. Data
 
@@ -50,3 +51,11 @@ The dataset of Cora, Citeseer and Pubmed are given in /notebooks/data/. We show 
 ![avatar](/dataset_info.png)
 
 I hope our document can help you！
+
+#### 3. Results
+
+Dataset | Model | ACC   
+-|-|-
+Cora | SGCN | 85.6 | 
+Pubmed | SGCN | 82.2 | 
+Citeseer | SGCN-meta | 74.4 |

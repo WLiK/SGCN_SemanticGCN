@@ -1,0 +1,9 @@
+--datname=citeseer
+--nbsz=20
+--dropout=0.18
+--lr=0.016
+--ncaps=7
+--nhidden=20
+--nlayer=8
+--reg=0.058
+--routit=6

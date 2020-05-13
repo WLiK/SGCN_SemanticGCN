@@ -1,0 +1,10 @@
+--datname=pubmed
+--nbsz=20
+--alpha=1.5
+--dropout=0.27
+--lr=0.02
+--ncaps=7
+--nhidden=24
+--nlayer=8
+--reg=0.022
+--routit=6

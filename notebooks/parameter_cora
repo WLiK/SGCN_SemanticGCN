@@ -1,0 +1,10 @@
+--datname=cora
+--nbsz=20
+--alpha=10
+--dropout=0.058
+--lr=0.045
+--ncaps=7
+--nhidden=10
+--nlayer=8
+--reg=0.002
+--routit=6

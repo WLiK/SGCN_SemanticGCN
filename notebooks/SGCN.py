@@ -497,11 +497,11 @@ class EvalHelper:
         loss = loss + self.alpha*attn_loss
         loss.backward()
         self.optmz.step()
-        #print('trn-loss: %.4f' % loss.item(), end=end)
+        print('trn-loss: %.4f' % loss.item(), end=end)
         return loss.item()
 
     def print_trn_acc(self):
-        #print('trn-', end='')
+        print('trn-', end='')
         trn_acc = self._print_acc(self.trn_idx, end=' val-')
         val_acc = self._print_acc(self.val_idx)
         return trn_acc, val_acc
@@ -520,7 +520,7 @@ class EvalHelper:
         pred = prob.max(1)[1].type_as(targ)
         acc = pred.eq(targ).double().sum() / len(targ)
         acc = acc.item()
-        #print('acc: %.4f' % acc, end=end)
+        print('acc: %.4f' % acc, end=end)
         return acc
 
     def visualize(self, sav_prefix):
@@ -568,13 +568,13 @@ class EvalHelper:
            # print('NMI_list: {}'.format(NMI_list))
            score = sum(NMI_list) / len(NMI_list)
            s2 = sum(ARI_list) / len(ARI_list)
-           print('NMI (10 avg): {:.4f} , ARI (10avg): {:.4f}'.format(score, s2))
+           #print('NMI (10 avg): {:.4f} , ARI (10avg): {:.4f}'.format(score, s2))
 
         else:
            estimator.fit(x, y)
            y_pred = estimator.predict(x)
            score = normalized_mutual_info_score(y, y_pred)
-           print("NMI on all label data: {:.5f}".format(score))
+           #print("NMI on all label data: {:.5f}".format(score))
         if return_NMI:
            return score, s2
 
@@ -597,10 +597,10 @@ def train_and_eval(datadir, datname, hyperpm):
     model_sav = tempfile.TemporaryFile()
     neib_sav = torch.zeros_like(agent.neib_sampler.nb_all, device='cpu')
     for t in range(hyperpm.nepoch):
-        #print('%3d/%d' % (t, hyperpm.nepoch), end=' ')
+        print('%3d/%d' % (t, hyperpm.nepoch), end=' ')
         agent.run_epoch(end=' ')
         _, cur_val_acc = agent.print_trn_acc()
-        agent.Kmeans()#clustering experiments
+        agent.Kmeans()
         if cur_val_acc > best_val_acc:
             wait_cnt = 0
             best_val_acc = cur_val_acc
@@ -612,7 +612,6 @@ def train_and_eval(datadir, datname, hyperpm):
             wait_cnt += 1
             if wait_cnt > hyperpm.early:
                 break
-    print("time: %.4f sec." % (time.time() - tm))
     model_sav.seek(0)
     agent.model.load_state_dict(torch.load(model_sav))
     agent.neib_sampler.nb_all.copy_(neib_sav)
@@ -621,7 +620,7 @@ def train_and_eval(datadir, datname, hyperpm):
 
 def main(args_str=None):
     assert float(torch.__version__[:3]) + 1e-3 >= 0.4
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(fromfile_prefix_chars='@')
     parser.add_argument('--datadir', type=str, default='./data/')
     parser.add_argument('--datname', type=str, default='citeseer')
     parser.add_argument('--cpu', action='store_true', default=False,
