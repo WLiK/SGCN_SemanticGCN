@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-#
-# See sample_results.ipynb for some sample results.
-#
+
 import argparse
 import os
 import pickle
@@ -228,15 +226,11 @@ class RoutingLayer(nn.Module):
         neighbors = neighbors.view(n, m)
         nei_mask = (neighbors >= 0)
         nei_mask = nei_mask.type(torch.FloatTensor)
-        #print(neighbors[0])
-        #print(nei_mask[0])
-        #print(p[0])
-        #print(p[0].argmax(dim = 1))
+
         p1 = p.argmax(dim = 2).view(n,m,1).to('cpu')
         A = torch.zeros(n, m, k).scatter(2, p1, 1)
         A = A.mul(nei_mask.view(n, m, 1))
-        #print(np.shape(A))
-        #print(A[0])
+
         B = A.permute(2,0,1)
         B = B.type(torch.LongTensor)
         B = B.mul(neighbors.view(1, n, m).to('cpu'))
@@ -245,11 +239,7 @@ class RoutingLayer(nn.Module):
         B = torch.cat([B, cache_minus], dim=1)
         #print(np.shape(B))
         meta_h = []
-        #u_c = u.clone()
-        #u_c = u
-        #x_c = self.mlp_meta(x_c.view(n+1, k, delta_d))
-        #u = self.mlp_meta(u.view(n, k, delta_d))
-        #print(x_c[-1])
+
         cut = 5
         for i in range(k):
            for j in range(k):
@@ -266,31 +256,7 @@ class RoutingLayer(nn.Module):
         #meta_h = fn.normalize(meta_h, 2)
         #meta_h = torch.cat([u, meta_h], dim=2)
         meta_h = u + meta_h
-        #print('shape_meta_h: ')
-        #print(np.shape(meta_h))
-        #print(x_c[-1])
-        
-        '''
-        for i in range(k):
-          print(B[i, 0, 0])
-        print('-------')
-        for i in range(k):
-          print(B[i, 0, 1])
-        print('--------')
-        for i in range(k):
-          print(B[i, 0, 2])
-        print('--------')
-        for i in range(k):
-          print(B[i, 0, 3])
-        print('--------')
-        for i in range(k):
-          print(B[i, 0, 4])
-        print('---------')
-        for i in range(m):
-          print(B[0, -1, i])
-        for j in range(m):
-          print(B[1, -1, i])
-        '''
+
         if(last_layer == True):
            return u.view(n, d), meta_h.view(n, d)
 

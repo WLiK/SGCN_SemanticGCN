@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-#
-# See sample_results.ipynb for some sample results.
-#
 import argparse
 import os
 import pickle
@@ -31,7 +28,6 @@ from sklearn import manifold
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 class ScaledDotProductAttention(nn.Module):
-    ''' Scaled Dot-Product Attention '''
 
     def __init__(self, temperature, attn_dropout=0.1):
         super().__init__()
@@ -50,8 +46,7 @@ class ScaledDotProductAttention(nn.Module):
  
         return output, attn
 
-class MultiHeadAttention(nn.Module):
-    ''' Multi-Head Attention module '''
+class Independence(nn.Module):
 
     def __init__(self, n_head, d_model, d_k, d_v, dropout=0.1):
         super().__init__()
@@ -65,7 +60,7 @@ class MultiHeadAttention(nn.Module):
         self.w_vs = nn.Linear(d_model, n_head * d_v, bias=False)
         self.fc = nn.Linear(n_head * d_v, d_model, bias=False)
     
-        self.attention = ScaledDotProductAttention(temperature=d_k **0.5 )
+        self.independence = ScaledDotProductAttention(temperature=d_k **0.5 )
 
         self.dropout = nn.Dropout(dropout)
         self.layer_norm = nn.LayerNorm(d_model, eps=1e-6)
@@ -79,19 +74,18 @@ class MultiHeadAttention(nn.Module):
         residual = q
         q = self.layer_norm(q)
 
-        # Pass through the pre-attention projection: b x lq x (n*dv)
+        # Pass through the pre projection: b x lq x (n*dv)
         # Separate different heads: b x lq x n x dv
         q = self.w_qs(q).view(sz_b, len_q, n_head, d_k)
         k = self.w_ks(k).view(sz_b, len_k, n_head, d_k)
         v = self.w_vs(v).view(sz_b, len_v, n_head, d_v)
 
-        # Transpose for attention dot product: b x n x lq x dv
         q, k, v = q.transpose(1, 2), k.transpose(1, 2), v.transpose(1, 2)
 
         if mask is not None:
             mask = mask.unsqueeze(1)   # For head axis broadcasting.
         
-        _, attn = self.attention(q, k, v, mask=mask)
+        _, attn = self.independence(q, k, v, mask=mask)
  
         # Transpose to move the head dimension back: b x lq x n x dv
         # Combine the last two dimensions to concatenate all the heads together: b x lq x (n*dv)
@@ -308,15 +302,9 @@ class RoutingLayer(nn.Module):
         neighbors = neighbors.view(n, m)
         nei_mask = (neighbors >= 0)
         nei_mask = nei_mask.type(torch.FloatTensor)
-        #print(neighbors[0])
-        #print(nei_mask[0])
-        #print(p[0])
-        #print(p[0].argmax(dim = 1))
         p1 = p.argmax(dim = 2).view(n,m,1).to('cpu')
         A = torch.zeros(n, m, k).scatter(2, p1, 1)
         A = A.mul(nei_mask.view(n, m, 1))
-        #print(np.shape(A))
-        #print(A[0])
         B = A.permute(2,0,1)
         B = B.type(torch.LongTensor)
         B = B.mul(neighbors.view(1, n, m).to('cpu'))
@@ -325,11 +313,7 @@ class RoutingLayer(nn.Module):
         B = torch.cat([B, cache_minus], dim=1)
         #print(np.shape(B))
         meta_h = []
-        #u_c = u.clone()
-        #u_c = u
-        #x_c = self.mlp_meta(x_c.view(n+1, k, delta_d))
-        #u = self.mlp_meta(u.view(n, k, delta_d))
-        #print(x_c[-1])
+        
         cut = 5
         for i in range(k):
            for j in range(k):
@@ -345,32 +329,7 @@ class RoutingLayer(nn.Module):
         #meta_h = x_c[:-1,:].view(n, k, delta_d) + meta_h
         #meta_h = fn.normalize(meta_h, 2)
         #meta_h = torch.cat([u, meta_h], dim=2)
-        meta_h = u + meta_h
-        #print('shape_meta_h: ')
-        #print(np.shape(meta_h))
-        #print(x_c[-1])
-        
-        '''
-        for i in range(k):
-          print(B[i, 0, 0])
-        print('-------')
-        for i in range(k):
-          print(B[i, 0, 1])
-        print('--------')
-        for i in range(k):
-          print(B[i, 0, 2])
-        print('--------')
-        for i in range(k):
-          print(B[i, 0, 3])
-        print('--------')
-        for i in range(k):
-          print(B[i, 0, 4])
-        print('---------')
-        for i in range(m):
-          print(B[0, -1, i])
-        for j in range(m):
-          print(B[1, -1, i])
-        '''
+        meta_h = u + meta_h   
         if(last_layer == True):
            return u.view(n, d), meta_h.view(n, d)
 
@@ -382,7 +341,7 @@ class CapsuleNet(nn.Module):  # CapsuleNet = DisenGCN
         self.ncaps = ncaps
         self.nhidden = hyperpm.nhidden
         self.pca = SparseInputLinear(nfeat, rep_dim)
-        self.attention = MultiHeadAttention(1, hyperpm.nhidden, hyperpm.nhidden, hyperpm.nhidden, 0.1)
+        self.indep = Independence(1, hyperpm.nhidden, hyperpm.nhidden, hyperpm.nhidden, 0.1)
         conv_ls = []
         for i in range(hyperpm.nlayer):
             conv = RoutingLayer(rep_dim, ncaps)
@@ -402,7 +361,7 @@ class CapsuleNet(nn.Module):  # CapsuleNet = DisenGCN
         x = self.pca(x)
         x = x.view(x.size(0), self.ncaps, self.nhidden)
         #x = fn.relu(x)
-        x, attn = self.attention(x, x, x)
+        x, attn = self.indep(x, x, x)
         x = fn.relu(x)
         attn_mask = torch.eye(self.ncaps).view(1,1,self.ncaps, self.ncaps)
         attn_mask = (attn_mask ==0. )
@@ -557,7 +516,7 @@ class EvalHelper:
         ARI_list = []  # adjusted_rand_score(
         NMI_list = []
         if time:
-          # print('KMeans exps {}次 æ±~B平å~]~G '.format(time))
+          
            for i in range(time):
                estimator.fit(x, y)
                y_pred = estimator.predict(x)
@@ -565,16 +524,15 @@ class EvalHelper:
                NMI_list.append(score)
                s2 = adjusted_rand_score(y, y_pred)
                ARI_list.append(s2)
-           # print('NMI_list: {}'.format(NMI_list))
+           
            score = sum(NMI_list) / len(NMI_list)
            s2 = sum(ARI_list) / len(ARI_list)
-           #print('NMI (10 avg): {:.4f} , ARI (10avg): {:.4f}'.format(score, s2))
 
         else:
            estimator.fit(x, y)
            y_pred = estimator.predict(x)
            score = normalized_mutual_info_score(y, y_pred)
-           #print("NMI on all label data: {:.5f}".format(score))
+           
         if return_NMI:
            return score, s2
 
