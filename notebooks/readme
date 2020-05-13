@@ -1,1 +1,3 @@
 The experimental results are listed in results.ipynb, please use jupyter notebook to open it.
+
+The 'parameter*' are some parameters of our model, which tuned by hyperopt tool.
