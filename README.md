@@ -2,11 +2,12 @@
 
 This repository is the official implementation of Semantic Graph Convolutional Networks.
 
-The ML Code Completness Checklist consists of three items:
+The ML Code Completness Checklist consists of four items:
 
 1. **Specification of dependencies**
 2. **Code**
 3. **Data**
+3. **Results**
 
 We explain each item on the checklist in detail blow. 
 
@@ -51,12 +52,12 @@ The dataset of Cora, Citeseer and Pubmed are given in /notebooks/data/. We show 
 
 ![avatar](/dataset_info.png)
 
-I hope our document can help you！
-
-#### 3. Results
+### 4. Results
 
 Dataset | Model | ACC   
 -|-|-
 Cora | SGCN | 85.6 | 
 Pubmed | SGCN | 82.2 | 
 Citeseer | SGCN-meta | 74.4 |
+
+I hope our document can help you！
