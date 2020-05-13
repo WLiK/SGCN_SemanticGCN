@@ -51,8 +51,6 @@ The dataset of Cora, Citeseer and Pubmed are given in /notebooks/data/. We show 
 
 ![avatar](/dataset_info.png)
 
-I hope our document can help you！
-
 #### 3. Results
 
 Dataset | Model | ACC   
@@ -60,3 +58,5 @@ Dataset | Model | ACC
 Cora | SGCN | 85.6 | 
 Pubmed | SGCN | 82.2 | 
 Citeseer | SGCN-meta | 74.4 |
+
+I hope our document can help you！
