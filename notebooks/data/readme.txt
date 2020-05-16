@@ -38,4 +38,3 @@ Please put the following files in this directory:
     trans.pubmed.ty
     trans.pubmed.x
     trans.pubmed.y
-You can download them from https://github.com/kimiyoung/planetoid/tree/master/data
