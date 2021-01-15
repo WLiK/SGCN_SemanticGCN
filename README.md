@@ -23,7 +23,7 @@ In our experiments, we trained our model via 8 32G NVIDIA Tesla V100 GPUs and 64
 
 At present, we provide the code file `SGCN.py` which includes the training module and the evaluation module. We will sort out our code more systematically in future.
 
-Due to the capacity limitations, we give the code and dataset  of major experiment 'Semi-Supervised Node Classification' on Cora, Citeseer and Pubmed in. In the experiment, we would utilize hyperopt to optimize the parameters in the search space and tune the neighbors slightly to get robust averaged results.  For the other details such as hyperopt file, we would release all of them if the paper was luckily to be accepted.
+Due to the capacity limitations, we give the code and dataset  of major experiment 'Semi-Supervised Node Classification' on Cora, Citeseer and Pubmed in. In the experiment, we would utilize hyperopt to optimize the parameters in the search space and tune the neighbors slightly to get robust averaged results. 
 
 We list some runing samples in `/notebook/result.ipynb`.  It is easily to train and eval the model as:
 
