@@ -1,6 +1,6 @@
 # Semantic Graph Convolutional Networks
 
-This repository is the official implementation of Semantic Graph Convolutional Networks.
+This repository is the official implementation of Semantic Graph Convolutional Networks (DASFAA 2021). Paper link: https://arxiv.org/abs/2101.06471
 
 The ML Code Completeness Checklist consists of three items:
 
@@ -52,3 +52,15 @@ The dataset of Cora, Citeseer and Pubmed are given in /notebooks/data/. We show 
 ![avatar](dataset_info.png)
 
 I hope our document can help you to understand what we do！
+
+Cite us as follow:
+````
+@misc{wu2021learning,
+      title={Learning the Implicit Semantic Representation on Graph-Structured Data}, 
+      author={Likang Wu and Zhi Li and Hongke Zhao and Qi Liu and Jun Wang and Mengdi Zhang and Enhong Chen},
+      year={2021},
+      eprint={2101.06471},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI}
+}
+````
